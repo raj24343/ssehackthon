@@ -30,8 +30,8 @@ export async function POST(request: Request) {
     });
 
     if (students.length !== normalizedRollNos.length) {
-      const found = students.map((s) => s.rollNo);
-      const missing = normalizedRollNos.filter((r) => !found.includes(r));
+      const found = students.map((s: { rollNo: string }) => s.rollNo);
+      const missing = normalizedRollNos.filter((r: string) => !found.includes(r));
       return NextResponse.json(
         {
           error: `Roll numbers not found or not registered: ${missing.join(", ")}. Please register first.`,
@@ -40,11 +40,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const alreadyInTeam = students.filter((s) => s.teamId);
+    const alreadyInTeam = students.filter((s: { teamId: string | null }) => s.teamId);
     if (alreadyInTeam.length > 0) {
       return NextResponse.json(
         {
-          error: `These students are already in a team: ${alreadyInTeam.map((s) => s.rollNo).join(", ")}. A student cannot be in multiple teams.`,
+          error: `These students are already in a team: ${alreadyInTeam.map((s: { rollNo: string }) => s.rollNo).join(", ")}. A student cannot be in multiple teams.`,
         },
         { status: 400 }
       );
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       data: {
         name: teamName,
         students: {
-          connect: students.map((s) => ({ id: s.id })),
+          connect: students.map((s: { id: string }) => ({ id: s.id })),
         },
       },
       include: { students: true },

@@ -13,9 +13,17 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!screenshot) {
+    if (!screenshot || typeof screenshot !== "string") {
       return NextResponse.json(
-        { error: "Payment screenshot is required" },
+        { error: "Payment screenshot is required (paste or upload and convert to string)" },
+        { status: 400 }
+      );
+    }
+    // Ensure screenshot is a valid base64 data URL string
+    const screenshotStr = String(screenshot).trim();
+    if (!screenshotStr.startsWith("data:image/")) {
+      return NextResponse.json(
+        { error: "Invalid screenshot format. Please upload or paste a valid image." },
         { status: 400 }
       );
     }
@@ -44,23 +52,49 @@ export async function POST(request: Request) {
         year: yearNum,
         branch: String(branch).trim(),
         phone: String(phone).trim(),
-        screenshot,
+        screenshot: screenshotStr,
       },
     });
 
     return NextResponse.json({ success: true, student });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Registration error:", error);
-    const msg = error instanceof Error ? error.message : "Unknown error";
+    const prismaCode = (error as { code?: string })?.code;
+    const msg = error instanceof Error ? error.message : String(error);
+    if (prismaCode === "P2021" || prismaCode === "P2022" || (msg.includes("does not exist") && msg.includes("database"))) {
+      return NextResponse.json(
+        { error: "Database tables not found. Run: npx prisma db push" },
+        { status: 503 }
+      );
+    }
     if (msg.includes("Unique constraint") || msg.includes("duplicate key")) {
       return NextResponse.json(
         { error: "A student with this roll number is already registered" },
         { status: 400 }
       );
     }
-    return NextResponse.json(
-      { error: "Failed to register. Please try again." },
-      { status: 500 }
-    );
+    if (msg.includes("Can't reach database") || msg.includes("connect ECONNREFUSED") || msg.includes("Connection")) {
+      return NextResponse.json(
+        { error: "Database connection failed. Please try again later or contact support." },
+        { status: 503 }
+      );
+    }
+    if (msg.includes("relation") && msg.includes("does not exist")) {
+      return NextResponse.json(
+        { error: "Database not set up. Please run: npx prisma db push" },
+        { status: 503 }
+      );
+    }
+    if (msg.includes("DATABASE_URL")) {
+      return NextResponse.json(
+        { error: "Server configuration error: Database URL not set." },
+        { status: 503 }
+      );
+    }
+    const userMessage =
+      process.env.NODE_ENV === "development"
+        ? `Registration failed: ${msg}`
+        : "Failed to register. Please try again.";
+    return NextResponse.json({ error: userMessage }, { status: 500 });
   }
 }

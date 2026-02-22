@@ -53,31 +53,71 @@ export default function Home() {
     });
   };
 
-  const handleScreenshotPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+  // Resize & compress image, then convert to base64 string (reduces payload size to avoid 1MB limit)
+  const fileToBase64String = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const MAX_WIDTH = 800;
+        const quality = 0.7;
+        const canvas = document.createElement("canvas");
+        let { width, height } = img;
+        if (width > MAX_WIDTH) {
+          height = (height * MAX_WIDTH) / width;
+          width = MAX_WIDTH;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas not supported"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve(dataUrl);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Failed to load image"));
+      };
+      img.src = url;
+    });
+
+  const handleScreenshotPaste = async (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData?.items;
     if (!items) return;
     for (const item of Array.from(items)) {
       if (item.type.startsWith("image/")) {
         const file = item.getAsFile();
         if (file) {
-          const reader = new FileReader();
-          reader.onload = () => setFormData((p) => ({ ...p, screenshot: reader.result as string }));
-          reader.readAsDataURL(file);
-          setRegMessage({ type: "success", text: "Screenshot pasted! You can now submit." });
+          try {
+            const base64String = await fileToBase64String(file);
+            setFormData((p) => ({ ...p, screenshot: base64String }));
+            setRegMessage({ type: "success", text: "Screenshot pasted and converted! You can now submit." });
+          } catch {
+            setRegMessage({ type: "error", text: "Failed to convert screenshot." });
+          }
         }
         break;
       }
     }
   };
 
-  const handleScreenshotFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleScreenshotFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = () => setFormData((p) => ({ ...p, screenshot: reader.result as string }));
-      reader.readAsDataURL(file);
-      setRegMessage({ type: "success", text: "Screenshot uploaded!" });
+      try {
+        const base64String = await fileToBase64String(file);
+        setFormData((p) => ({ ...p, screenshot: base64String }));
+        setRegMessage({ type: "success", text: "Screenshot uploaded and converted!" });
+      } catch {
+        setRegMessage({ type: "error", text: "Failed to convert screenshot." });
+      }
     }
+    e.target.value = ""; // Reset input for re-upload
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -391,8 +431,11 @@ export default function Home() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Payment Screenshot (paste or upload)
+                Payment Screenshot
               </label>
+              <p className="mt-0.5 text-xs text-gray-500">
+                Take a screenshot of payment success, then paste (Ctrl+V) or upload — it will be converted to string.
+              </p>
               <div
                 onPaste={handleScreenshotPaste}
                 className="mt-1 flex min-h-[120px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-4 transition-all duration-300 hover:border-[#ff6b35] hover:bg-orange-50/30"
@@ -403,7 +446,7 @@ export default function Home() {
                   onChange={handleScreenshotFile}
                   className="text-sm"
                 />
-                <p className="mt-2 text-xs text-gray-500">Or paste (Ctrl+V) your screenshot here</p>
+                <p className="mt-2 text-xs text-gray-500">Paste (Ctrl+V) or choose file — image converts to base64 string</p>
                 {formData.screenshot && (
                   <img
                     src={formData.screenshot}

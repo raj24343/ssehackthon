@@ -18,6 +18,8 @@ A beautiful orange & white themed hackathon registration website built with Next
 
 **Pages**: `/team` — Shraddha Developers (name, mobile, email, role) | `/queries-tech` — Queries & Tech Stack per problem
 
+**Admin**: Secret URL `/admin/<ADMIN_SECRET>` — View all registrations (name, roll no, year, branch, phone, screenshot, team). Set `ADMIN_SECRET` in `.env` (e.g. `ADMIN_SECRET=k8mN2pQ7xR4fL9`). Change it to your own random string!
+
 ## Setup
 
 1. Install dependencies:
@@ -25,7 +27,7 @@ A beautiful orange & white themed hackathon registration website built with Next
    npm install
    ```
 
-2. Ensure `.env` has `DATABASE_URL` for PostgreSQL (Neon, Supabase, or local).
+2. Ensure `.env` has `DATABASE_URL` and `ADMIN_SECRET` (random string for admin page URL).
 
 3. Push schema to database:
    ```bash

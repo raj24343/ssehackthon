@@ -84,8 +84,12 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(teams);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Fetch teams error:", error);
+    const prismaCode = (error as { code?: string })?.code;
+    if (prismaCode === "P2021" || prismaCode === "P2022") {
+      return NextResponse.json({ teams: [], error: "Run: npx prisma db push" }, { status: 200 });
+    }
     return NextResponse.json({ error: "Failed to fetch teams" }, { status: 500 });
   }
 }

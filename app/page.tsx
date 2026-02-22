@@ -7,7 +7,7 @@ import { FRONTEND_TEAM, BACKEND_TEAM, BRANCHES } from "@/lib/constants";
 const NAV_ITEMS = ["Hero", "Prerequisites", "Problem Statements", "Register", "Form Team", "Teams", "Contact"];
 
 const UPI_ID = "shraddhagroup123@ybl";
-const REGISTRATION_FEE = 99;
+const REGISTRATION_FEE = 200;
 
 export default function Home() {
   const [formData, setFormData] = useState({

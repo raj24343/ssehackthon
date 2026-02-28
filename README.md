@@ -1,4 +1,4 @@
-# Hackathon 2026 Registration Website
+# IoT Hackathon – Dhanalakshmi Srinivasan Engineering College
 
 A beautiful orange & white themed hackathon registration website built with Next.js.
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FRONTEND_TEAM, BACKEND_TEAM, BRANCHES } from "@/lib/constants";
 
-const NAV_ITEMS = ["Hero", "Prerequisites", "Problem Statements", "Register", "Form Team", "Teams", "Contact"];
+const NAV_ITEMS = ["Hero", "Register", "Form Team", "Teams", "Contact"];
 
 const UPI_ID = "shraddhagroup123@ybl";
 const REGISTRATION_FEE = 200;
@@ -173,7 +173,10 @@ export default function Home() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 border-b border-orange-100 bg-white/98 backdrop-blur-md shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <span className="text-xl font-bold text-[#ff6b35] sm:text-2xl">Hackathon 2K26</span>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-[#ff6b35] sm:text-2xl">IoT Hackathon</span>
+            <span className="text-xs font-medium text-gray-500">Dhanalakshmi Srinivasan Engineering College</span>
+          </div>
 
           {/* Desktop nav links */}
           <div className="hidden items-center gap-1 lg:flex">
@@ -186,9 +189,6 @@ export default function Home() {
                 {s}
               </button>
             ))}
-            <Link href="/queries-tech" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-orange-50 hover:text-[#ff6b35]">
-              Queries & Tech
-            </Link>
             <Link href="/team" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-orange-50 hover:text-[#ff6b35]">
               Our Team
             </Link>
@@ -223,9 +223,6 @@ export default function Home() {
                   {s}
                 </button>
               ))}
-              <Link href="/queries-tech" className="rounded-lg px-4 py-3 font-medium text-gray-700 hover:bg-orange-50" onClick={() => setMobileMenuOpen(false)}>
-                Queries & Tech
-              </Link>
               <Link href="/team" className="rounded-lg px-4 py-3 font-medium text-gray-700 hover:bg-orange-50" onClick={() => setMobileMenuOpen(false)}>
                 Our Team
               </Link>
@@ -255,10 +252,7 @@ export default function Home() {
         <div className="absolute left-[20%] bottom-[30%] h-20 w-20 rounded-full border-2 border-white/20 animate-float-slow" />
 
         <div className="relative mx-auto flex min-h-[70vh] max-w-4xl flex-col items-center justify-center text-center text-white">
-          <p className="animate-fade-in-up text-sm font-semibold uppercase tracking-[0.3em] text-white/80 sm:text-base animate-delay-100">
-            26 · 27 · 28 Feb 2026
-          </p>
-          <h1 className="animate-fade-in-up mt-4 text-4xl font-extrabold leading-tight tracking-tight drop-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl animate-delay-200">
+          <h1 className="animate-fade-in-up text-4xl font-extrabold leading-tight tracking-tight drop-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl animate-delay-200">
             Build.
             <br />
             <span className="relative">
@@ -269,7 +263,7 @@ export default function Home() {
             Innovate.
           </h1>
           <p className="animate-fade-in-up mt-6 max-w-xl text-lg text-white/95 sm:text-xl animate-delay-300">
-            Join the hackathon. Form your team of 4–5. Build solutions that matter.
+            Join the IoT Hackathon. Form your team of 4–5. Build solutions that matter.
           </p>
           <div className="animate-fade-in-up mt-10 flex flex-col gap-4 sm:flex-row sm:gap-5 animate-delay-400">
             <button
@@ -284,63 +278,6 @@ export default function Home() {
             >
               Form Team
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Prerequisites */}
-      <section id="prerequisites" className="border-b border-orange-100 bg-[#fff5f0] px-4 py-12 sm:py-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Prerequisites</h2>
-          <p className="mt-2 text-gray-600">
-            Please ensure you have the following before participating:
-          </p>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {["Laptop", "VSCode", "Node.js installed", "Git installed"].map((item, i) => (
-              <li
-                key={item}
-                className="group flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-orange-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-100/50 hover:ring-[#ff6b35]/50"
-              >
-                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#ff6b35] text-white transition-transform duration-300 group-hover:scale-110">
-                  ✓
-                </span>
-                <span className="font-medium group-hover:text-[#ff6b35] transition-colors">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Problem Statements */}
-      <section id="problemstatements" className="px-4 py-12 sm:py-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Problem Statements</h2>
-          <p className="mt-2 text-gray-600">
-            Choose based on your year. More features = better chance in the prize pool!
-          </p>
-          <Link
-            href="/queries-tech"
-            className="mt-2 inline-block text-sm font-medium text-[#ff6b35] underline-offset-2 transition hover:underline"
-          >
-            View Queries & Tech Stack →
-          </Link>
-          <div className="mt-8 space-y-6">
-            {[
-              { year: "First Year", title: "Human Nutrition Tips", desc: "Web application frontend for nutrition guidance." },
-              { year: "Second Year", title: "Health Management System", desc: "Full-stack health management solution." },
-              { year: "Third Year", title: "Tenant Architecture of Health Management System", desc: "Multi-tenant architecture for health systems." },
-            ].map((p) => (
-              <div
-                key={p.year}
-                className="group rounded-xl border-2 border-orange-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#ff6b35] hover:shadow-lg hover:shadow-orange-100/50"
-              >
-                <span className="rounded-full bg-[#ff6b35] px-3 py-1 text-sm font-semibold text-white transition group-hover:scale-105">
-                  {p.year}
-                </span>
-                <h3 className="mt-4 text-xl font-semibold transition group-hover:text-[#ff6b35]">{p.title}</h3>
-                <p className="mt-2 text-gray-600">{p.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -385,6 +322,7 @@ export default function Home() {
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
+                <option value="4">4</option>
               </select>
             </div>
             <div>
@@ -635,8 +573,8 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-orange-200 bg-gray-900 px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-semibold text-[#ff6b35]">Hackathon 2K26</p>
-          <p className="mt-1 text-sm text-gray-400">26 · 27 · 28 February</p>
+          <p className="font-semibold text-[#ff6b35]">IoT Hackathon</p>
+          <p className="mt-1 text-sm text-gray-400">Dhanalakshmi Srinivasan Engineering College</p>
         </div>
       </footer>
     </div>

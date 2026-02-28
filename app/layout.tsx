@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hackathon 2026 | Register Now",
-  description: "Hackathon 26-28 February 2026. Register, form your team, and build innovative solutions.",
+  title: "IoT Hackathon | Dhanalakshmi Srinivasan Engineering College",
+  description: "IoT Hackathon at Dhanalakshmi Srinivasan Engineering College. 26-28 February 2026. Register, form your team, and build innovative solutions.",
 };
 
 export default function RootLayout({
